@@ -1,0 +1,42 @@
+{
+  "name": "backend",
+  "version": "1.0",
+  "homepage": "",
+  "author": "",
+  "description": "Projeto com objetivo de autenticar/autorizar usuários a partir de Tags RFID utilizando Banco de Dados",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT",
+  "keywords": [
+    "nodemcu",
+    "rfid",
+    "python",
+    "nodejs",
+    "web-app",
+    "mysql",
+    "mqtt",
+    "websockets",
+    "api",
+    "docker"
+  ],
+  "scripts": {
+    "prod": "node index",
+    "dev": "nodemon index"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "mqtt": "^2.8.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
+    "promise": "^7.1.1",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
+    "sequelize": "^6.26.0"
+  }
+}
