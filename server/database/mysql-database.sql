@@ -3,6 +3,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for access_log
 -- ----------------------------
+USE sys;
 DROP TABLE IF EXISTS `access_log`;
 CREATE TABLE `access_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
