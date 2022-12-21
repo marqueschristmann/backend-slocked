@@ -53,8 +53,9 @@ INSERT INTO `tags` VALUES ('1', '1', '1', '1', '2022-06-03 08:57:18', '2022-06-0
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL UNIQUE,
+  `password` varchar(255) NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -64,5 +65,5 @@ CREATE TABLE `users` (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', 'Marques', 'marques54564@gmail.com', '2022-06-03 08:57:18', '2022-06-03 08:57:26');
+INSERT INTO `users` VALUES ('1', 'Marques', 'marques54564@gmail.com', '123456', '2022-06-03 08:57:18', '2022-06-03 08:57:26');
 SET FOREIGN_KEY_CHECKS=1;
