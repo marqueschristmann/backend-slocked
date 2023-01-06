@@ -1,27 +1,53 @@
-const express = require('express')
-  , bodyParser = require('body-parser')
-  , cors = require('cors')
-  , app = express();
+import express from "express";
+import cors from "cors";
+import session from "express-session";
+import dotenv from "dotenv";
+import db from "./config/Database.js";
+import SequelizeStore from "connect-session-sequelize";
+import UserRoute from "./routes/UserRoute.js";
+import SalaRoute from "./routes/SalaRoute.js";
+import AuthRoute from "./routes/AuthRoute.js";
+dotenv.config();
 
-/* load dotenv */
-require('dotenv').load();
-const config = require('./src/config/config');
+const app = express();
 
-/* Middlewares */
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors());
+const sessionStore = SequelizeStore(session.Store);
 
-/* Routes */
-app.get('/', (req, res) => {
-  res.json({
-    'endpoints': config.api.endpoints
-  });
+const store = new sessionStore({
+    db: db
 });
 
-app.use('/api', require('./src/routes/main'));
+//  sincronizar banco
+//(async()=>{
+   //  await db.sync();
+// })();
 
-/* App listen */
-app.listen(4000, () => console.log(`O back-end esta no ar na porta 4000`));
+app.use(session({
+    secret: process.env.SESS_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: store,
+    cookie: {
+        secure: 'auto'
+    }
+}));
+
+app.use(cors({
+    //credentials: true,
+    //origin: 'http://localhost:3000'
+}));
+app.use(express.json());
+app.use(UserRoute);
+app.use(SalaRoute);
+app.use(AuthRoute);
+
+////iniciar uma seção sempre que for usar
+//store.sync();
+
+/* mqtt */
+//require('./mqtt');
 
 
+app.listen(process.env.APP_PORT, ()=> {
+    console.log('Server up and running...');
+});
