@@ -24,7 +24,7 @@ services:
     volumes:
       - ./server/nodejs:/var/www/app
     ports:
-      - "3000:3000"
+      - "5000:5000"
     links:
       - mysql
     depends_on:
@@ -39,5 +39,5 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=rfid
-      - MYSQL_USER=rfid
-      - MYSQL_PASSWORD=rfid
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=1234
