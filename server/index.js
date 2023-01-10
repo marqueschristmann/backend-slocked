@@ -18,14 +18,15 @@ const store = new sessionStore({
 });
 
 //  sincronizar banco
-//(async()=>{
-   //  await db.sync();
-// })();
+(async()=>{
+    await db.sync();
+ })();
 
+app.set('trust proxy', 1) // trust first proxy
 app.use(session({
-    secret: process.env.SESS_SECRET,
     resave: false,
     saveUninitialized: true,
+    secret: process.env.SESS_SECRET,
     store: store,
     cookie: {
         secure: 'auto'
@@ -33,8 +34,8 @@ app.use(session({
 }));
 
 app.use(cors({
-    //credentials: true,
-    //origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
+    credentials: true
 }));
 app.use(express.json());
 app.use(UserRoute);
@@ -42,12 +43,12 @@ app.use(SalaRoute);
 app.use(AuthRoute);
 
 ////iniciar uma seção sempre que for usar
-//store.sync();
+store.sync();
 
 /* mqtt */
 //require('./mqtt');
 
-
-app.listen(process.env.APP_PORT, ()=> {
-    console.log('Server up and running...');
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, ()=> {
+    console.log(`Server up and running... ${PORT}`);
 });

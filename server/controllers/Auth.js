@@ -1,68 +1,7 @@
 import User from "../models/UserModel.js";
 import argon2 from "argon2";
-import jwt from "jsonwebtoken";
 
-export const refreshToken = async(req, res) => {
-    try {
-        const refreshToken = req.cookies.refreshToken;
-        if(!refreshToken) return res.sendStatus(401);
-        const user = await Users.findAll({
-            where:{
-                refresh_token: refreshToken
-            }
-        });
-        if(!user[0]) return res.sendStatus(403);
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-            if(err) return res.sendStatus(403);
-        const uuid = user.uuid;
-        const name = user.name;
-        const email = user.email;
-        const role = user.role;
-            const accessToken = jwt.sign({uuid, name, email, role}, process.env.ACCESS_TOKEN_SECRET,{
-                expiresIn: '15s'
-            });
-            res.json({ accessToken });
-        });
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-export const Login = async(req, res) => {
-    try {
-        const user = await Users.findAll({
-            where:{
-                email: req.body.email
-            }
-        });
-        const match = await argon2.verify(req.body.password, user[0].password);
-        if(!match) return res.status(400).json({msg: "Wrong Password"});
-        const uuid = user.uuid;
-        const name = user.name;
-        const email = user.email;
-        const role = user.role;
-        const accessToken = jwt.sign({uuid, name, email, role}, process.env.ACCESS_TOKEN_SECRET,{
-            expiresIn: '20s'
-        });
-        const refreshToken = jwt.sign({uuid, name, email, role}, process.env.REFRESH_TOKEN_SECRET,{
-            expiresIn: '1d'
-        });
-        await Users.update({refresh_token: refreshToken},{
-            where:{
-                id: userId
-            }
-        });
-        res.cookie('refreshToken', refreshToken,{
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000
-        });
-        res.json({ accessToken });
-    } catch (error) {
-        res.status(404).json({msg:"Email not found"});
-    }
-}
-
-/*export const Login = async (req, res) =>{
+export const Login = async (req, res) =>{
     const user = await User.findOne({
         where: {
             email: req.body.email
@@ -77,7 +16,7 @@ export const Login = async(req, res) => {
     const email = user.email;
     const role = user.role;
     res.status(200).json({uuid, name, email, role});
-}*/
+}
 
 export const Me = async (req, res) =>{
     if(!req.session.userId){

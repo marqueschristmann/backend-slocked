@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 import Users from "./UserModel.js";
+import SalaUser from "./SalaUserModel.js";
 
 const {DataTypes} = Sequelize;
 
@@ -49,7 +50,12 @@ const Salas = db.define('sala',{
     freezeTableName: true
 });
 
-Users.hasMany(Salas);
-Salas.belongsTo(Users, {foreignKey: 'userId'});
+Users.belongsToMany(Salas,  {
+    through: SalaUser,
+    foreignKey:'userId'});
+    
+Salas.belongsToMany(Users, {
+    through: SalaUser,
+    foreignKey:'userId'})
 
 export default Salas;
