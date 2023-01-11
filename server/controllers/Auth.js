@@ -23,7 +23,7 @@ export const Me = async (req, res) =>{
         return res.status(401).json({msg: "Please login to your account!"});
     }
     const user = await User.findOne({
-        attributes:['uuid','name','email','role'],
+        attributes:['uuid','name','email', 'disciplinaOUcargo' ,'role', 'createdAt'],
         where: {
             uuid: req.session.userId
         }

@@ -56,6 +56,6 @@ Users.belongsToMany(Salas,  {
     
 Salas.belongsToMany(Users, {
     through: SalaUser,
-    foreignKey:'userId'})
+    foreignKey:'salaId'})
 
 export default Salas;
