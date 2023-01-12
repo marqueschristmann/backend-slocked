@@ -50,14 +50,14 @@ export const getSalaById = async(req, res) =>{
     try {
         const sala = await Sala.findOne({
             where:{
-                id: req.params.id
+                uuid: req.params.id
             }
         });
         if(!sala) return res.status(404).json({msg: "Data not found"});
         let response;
         if(req.role === "admin"){
             response = await Sala.findOne({
-                attributes:['id', 'uuid','name','numero','status'],
+                attributes:['id', 'uuid','name','numero','status', 'createdAt'],
                 where:{
                     id: sala.id
                 },
