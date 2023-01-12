@@ -34,10 +34,20 @@ app.use(session({
     }
 }));
 
+
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS', req.headers.origin);
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.use(cors({
     origin: 'http://localhost:3000',
-    credentials: true
+    credentials: true,
+    optionSuccessStatus:200,
+   'Access-Control-Allow-Origin': '*'
 }));
+
 app.use(express.json());
 app.use(UserRoute);
 app.use(SalaUserRoute);
