@@ -1,11 +1,13 @@
 import Sala from "../models/SalaModel.js";
 import User from "../models/UserModel.js";
 import {Op} from "sequelize";
+import SalaUser from "../models/SalaUserModel.js";
+
 
 export const getSalas = async (req, res) =>{
     try {
         let response;
-        if(req.role === "admin" , "user"){
+        if(req.role === "admin"){
             response = await Sala.findAll({
                 attributes:['uuid','name','numero','status'],
                 include:[{
@@ -14,10 +16,23 @@ export const getSalas = async (req, res) =>{
                 }]
             });
         }else{
+            function listaSalas(lista){
+                const resposta = [];
+                for(var i=0; i<lista.length; i++){
+                    resposta.push({id: lista[i].dataValues.salaId});
+                }
+                return resposta;
+            };
+            const lista = await SalaUser.findAll({
+                attributes:['salaId'],
+                where:{
+                    userId: req.userId
+                },
+            });
             response = await Sala.findAll({
                 attributes:['uuid','name','numero','status'],
                 where:{
-                    userId: req.userId
+                    [Op.or]: listaSalas(lista)
                 },
                 include:[{
                     model: User,
@@ -35,16 +50,16 @@ export const getSalaById = async(req, res) =>{
     try {
         const sala = await Sala.findOne({
             where:{
-                uuid: req.params.id
+                id: req.params.id
             }
         });
         if(!sala) return res.status(404).json({msg: "Data not found"});
         let response;
-        if(req.role === "admin" , "user"){
+        if(req.role === "admin"){
             response = await Sala.findOne({
-                attributes:['uuid','name','numero','status'],
+                attributes:['id', 'uuid','name','numero','status'],
                 where:{
-                    id: product.id
+                    id: sala.id
                 },
                 include:[{
                     model: User,

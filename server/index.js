@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import db from "./config/Database.js";
 import SequelizeStore from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
+import SalaUserRoute from "./routes/SalaUserRoute.js";
 import SalaRoute from "./routes/SalaRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 dotenv.config();
@@ -39,6 +40,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(UserRoute);
+app.use(SalaUserRoute);
 app.use(SalaRoute);
 app.use(AuthRoute);
 
