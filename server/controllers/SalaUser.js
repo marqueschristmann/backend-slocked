@@ -1,6 +1,6 @@
 import Sala from "../models/SalaModel.js";
 import User from "../models/UserModel.js";
-import {Op} from "sequelize";
+import { Op } from "sequelize";
 import SalaUser from "../models/SalaUserModel.js";
 
 
@@ -21,20 +21,22 @@ export const deleteSalaUser = async(req, res) =>{
     try {
         const sala = await Sala.findOne({
             where:{
-                uuid: req.params.id
+                id: req.params.id
             }
         });
         if(!sala) return res.status(404).json({msg: "Data not found"});
-        const {name, numero, status} = req.body;
         if(req.role === "admin"){
             await SalaUser.destroy({
                 where:{
-                    salaId: sala.id
+                    [Op.and]: [{salaId: req.body.userId}, {userId: req.params.salaId}]
                 }
             });
-        }else{
-            if(req.userId !== sala.userId) return res.status(403).json({msg: "Forbidden access"});
-        }
+        } else{
+            if(req.userId !== sala.userId) {
+                return res.status(403).json({msg: "Forbidden access"})
+            };
+        };
+
         res.status(200).json({msg: "Access denied successfuly"});
     } catch (error) {
         res.status(500).json({msg: error.message});
@@ -45,15 +47,15 @@ export const deleteUserSala = async(req, res) =>{
     try {
         const user = await User.findOne({
             where:{
-                uuid: req.params.id
+                id: req.params.id
             }
         });
         if(!user) return res.status(404).json({msg: "Data not found"});
-        const {name, email} = req.body;
+
         if(req.role === "admin"){
             await SalaUser.destroy({
                 where:{
-                    userId: user.id
+                    [Op.and]: [{salaId: req.body.salaId}, {userId: user.id}] 
                 }
             });
         }else{
