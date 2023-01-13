@@ -4,25 +4,26 @@ import {Op} from "sequelize";
 import SalaUser from "../models/SalaUserModel.js";
 
 
+function listaSalas(lista){
+    const resposta = [];
+    for(var i=0; i<lista.length; i++){
+        resposta.push({id: lista[i].dataValues.salaId});
+    }
+    return resposta;
+};
+
 export const getSalas = async (req, res) =>{
     try {
         let response;
         if(req.role === "admin"){
             response = await Sala.findAll({
-                attributes:['uuid','name','numero','status'],
+                attributes:['id', 'uuid','name','numero','status'],
                 include:[{
                     model: User,
                     attributes:['name','email']
                 }]
             });
         }else{
-            function listaSalas(lista){
-                const resposta = [];
-                for(var i=0; i<lista.length; i++){
-                    resposta.push({id: lista[i].dataValues.salaId});
-                }
-                return resposta;
-            };
             const lista = await SalaUser.findAll({
                 attributes:['salaId'],
                 where:{
@@ -30,7 +31,48 @@ export const getSalas = async (req, res) =>{
                 },
             });
             response = await Sala.findAll({
-                attributes:['uuid','name','numero','status'],
+                attributes:['id', 'uuid','name','numero','status'],
+                where:{
+                    [Op.or]: listaSalas(lista)
+                },
+                include:[{
+                    model: User,
+                    attributes:['name','email']
+                }]
+            });
+        }
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({msg: error.message});
+    }
+}
+
+export const getSalaByUser = async (req, res) =>{
+    try {
+        let response;
+        const user = await User.findOne({
+            attributes:['id', 'uuid','name','tags','matricula','disciplinaOUcargo','email','role', 'createdAt'],
+            where: {
+                id: req.params.id
+            }
+        });
+        if(user.role === "admin"){
+            response = await Sala.findAll({
+                attributes:['id', 'uuid','name','numero','status'],
+                include:[{
+                    model: User,
+                    attributes:['name','email']
+                }]
+            });
+        }else{
+            const lista = await SalaUser.findAll({
+                attributes:['salaId'],
+                where:{
+                    userId: user.id
+                },
+            });
+            response = await Sala.findAll({
+                attributes:['id', 'uuid','name','numero','status'],
                 where:{
                     [Op.or]: listaSalas(lista)
                 },
@@ -68,7 +110,7 @@ export const getSalaById = async(req, res) =>{
             });
         }else{
             response = await Sala.findOne({
-                attributes:['uuid','name','numero','status'],
+                attributes:['id', 'uuid','name','numero','status'],
                 where:{
                     [Op.and]:[{id: sala.id}, {userId: req.userId}]
                 },
@@ -143,11 +185,21 @@ export const deleteSala = async(req, res) =>{
                     id: sala.id
                 }
             });
+            await SalaUser.destroy({
+                where:{
+                    salaId: sala.id
+                }
+            });
         }else{
             if(req.userId !== sala.userId) return res.status(403).json({msg: "Forbidden access"});
             await Sala.destroy({
                 where:{
                     [Op.and]:[{id: sala.id}, {userId: req.userId}]
+                }
+            });
+            await SalaUser.destroy({
+                where:{
+                    salaId: sala.id
                 }
             });
         }

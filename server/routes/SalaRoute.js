@@ -4,13 +4,15 @@ import {
     getSalaById,
     createSala,
     updateSala,
-    deleteSala
+    deleteSala,
+    getSalaByUser
 } from "../controllers/Salas.js";
 import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
 
 const router = express.Router();
 
 router.get('/salas',verifyUser, getSalas);
+router.get('/salas/user/:id',verifyUser, getSalaByUser);
 router.get('/salas/:id',verifyUser, getSalaById);
 router.post('/salas',verifyUser, adminOnly, createSala);
 router.patch('/salas/:id',verifyUser, adminOnly, updateSala);

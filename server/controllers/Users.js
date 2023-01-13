@@ -1,5 +1,6 @@
 import User from "../models/UserModel.js";
 import argon2 from "argon2";
+import SalaUser from "../models/SalaUserModel.js";
 
 export const getUsers = async(req, res) =>{
     try {
@@ -15,7 +16,7 @@ export const getUsers = async(req, res) =>{
 export const getUserById = async(req, res) =>{
     try {
         const response = await User.findOne({
-            attributes:['uuid','name','tags','matricula','disciplinaOUcargo','email','role', 'createdAt'],
+            attributes:['id', 'uuid','name','tags','matricula','disciplinaOUcargo','email','role', 'createdAt'],
             where: {
                 uuid: req.params.id
             }
@@ -92,6 +93,11 @@ export const deleteUser = async(req, res) =>{
         await User.destroy({
             where:{
                 id: user.id
+            }
+        });
+        await SalaUser.destroy({
+            where:{
+                userId: user.id
             }
         });
         res.status(200).json({msg: "User Deleted"});
