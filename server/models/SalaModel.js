@@ -39,6 +39,15 @@ const Salas = db.define('sala',{
             len: [3, 100]
         }
     },
+    grupo:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Sala de Aula',
+        validate:{
+            notEmpty: true,
+            len: [3, 100]
+        }
+    },
     userId:{
         type: DataTypes.INTEGER,
         allowNull: false,

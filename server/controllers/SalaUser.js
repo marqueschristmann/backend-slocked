@@ -26,9 +26,15 @@ export const deleteSalaUser = async(req, res) =>{
         });
         if(!sala) return res.status(404).json({msg: "Data not found"});
         if(req.role === "admin"){
+            const user = await User.findOne({
+                attributes:['id'],
+                where:{
+                    uuid: req.body.userId
+                }
+            });
             await SalaUser.destroy({
                 where:{
-                    [Op.and]: [{salaId: req.body.userId}, {userId: req.params.salaId}]
+                    [Op.and]: [{salaId: user.id}, {userId: req.params.salaId}]
                 }
             });
         } else{
