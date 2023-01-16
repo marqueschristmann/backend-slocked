@@ -17,6 +17,27 @@ export const createSalaUser = async(req, res) =>{
     }
 }
 
+export const createGroupSalaUser = async(req, res) =>{
+    const {grupo, userId} = req.body;
+    try {
+        const response = await Sala.findAll({
+            attributes:['id'],
+            where: {
+                grupo: grupo
+            }
+        });
+        for(let i = 0; i < response.length; i++){
+            await SalaUser.create({
+                salaId: response[i].id,
+                userId: userId
+            });
+        }
+        res.status(201).json({msg: "Sala Created Successfuly"});
+    } catch (error) {
+        res.status(500).json({msg: error.message});
+    }
+}
+
 export const deleteSalaUser = async(req, res) =>{
     try {
         const sala = await Sala.findOne({

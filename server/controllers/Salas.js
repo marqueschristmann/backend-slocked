@@ -17,7 +17,7 @@ export const getSalas = async (req, res) =>{
         let response;
         if(req.role === "admin"){
             response = await Sala.findAll({
-                attributes:['id', 'uuid','name','numero','status'],
+                attributes:['id', 'uuid','name', 'grupo','numero','status'],
                 include:[{
                     model: User,
                     attributes:['name','email']
@@ -31,7 +31,7 @@ export const getSalas = async (req, res) =>{
                 },
             });
             response = await Sala.findAll({
-                attributes:['id', 'uuid','name','numero','status'],
+                attributes:['id', 'uuid','name', 'grupo','numero','status'],
                 where:{
                     [Op.or]: listaSalas(lista)
                 },
@@ -127,12 +127,13 @@ export const getSalaById = async(req, res) =>{
 }
 
 export const createSala = async(req, res) =>{
-    const {name, numero, status} = req.body;
+    const {name, numero, status, grupo} = req.body;
     try {
         await Sala.create({
             name: name,
             numero: numero,
             status: status,
+            grupo: grupo,
             userId: req.userId
         });
         res.status(201).json({msg: "Sala Created Successfuly"});
