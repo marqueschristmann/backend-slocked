@@ -99,7 +99,7 @@ export const getSalaById = async(req, res) =>{
         let response;
         if(req.role === "admin"){
             response = await Sala.findOne({
-                attributes:['id', 'uuid','name','numero','status', 'createdAt'],
+                attributes:['id', 'uuid','name','numero','status', 'grupo', 'createdAt'],
                 where:{
                     id: sala.id
                 },
@@ -150,16 +150,16 @@ export const updateSala = async(req, res) =>{
             }
         });
         if(!sala) return res.status(404).json({msg: "Data not found"});
-        const {name, numero, status} = req.body;
+        const {name, numero, status, grupo} = req.body;
         if(req.role === "admin"){
-            await Sala.update({name, numero, status},{
+            await Sala.update({name, numero, status, grupo},{
                 where:{
                     id: sala.id
                 }
             });
         }else{
             if(req.userId !== sala.userId) return res.status(403).json({msg: "Forbidden access"});
-            await Sala.update({name, numero, status},{
+            await Sala.update({name, numero, status, grupo},{
                 where:{
                     [Op.and]:[{id: sala.id}, {userId: req.userId}]
                 }
