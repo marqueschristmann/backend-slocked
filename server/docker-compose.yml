@@ -1,43 +1,31 @@
-version: '3'
+version: '3.8'
 
-# Named volumes
-volumes:
-  # MySQL Data
-  rfid-mysql-data:
-    driver: local
+networks:
+  docker-net:
+    driver: bridge
 
 services:
-  # Client
-  client:
-    image:
-    container_name: rfid-client
-    volumes:
-      - ./client:/srv
+  backend:
+    build: ./
+    container_name: backend-slocked
     ports:
-      - "80:2015"
-
-  # WebService - NodeJS
-  server:
-    image:
-    container_name: rfid-server
-    command: node index.js
-    volumes:
-      - ./server/nodejs:/var/www/app
-    ports:
-      - "5000:5000"
+      - 5000:5000
     links:
-      - mysql
+      - database
+    networks:
+      - docker-net
     depends_on:
-      - mysql
-  mysql:
-    image: ambientum/mysql:5.7
-    container_name: rfid-mysql
-    volumes:
-      - rfid-mysql-data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+      - database
+    command: npm run start
+
+  database:
+    image: mysql:8.0
+    container_name: database-slocked
+    restart: always
+    networks:
+      - docker-net
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=0038
       - MYSQL_DATABASE=rfid
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=1234
+    ports:
+      - 3306:3306
