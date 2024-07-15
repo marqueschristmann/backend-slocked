@@ -46,7 +46,6 @@ Basicamente as etapas abaixo serão feitas:
 
 O repositório está organizado devido as responsabilidades que o mesmo oferece.
 
-* database - script com a estrutura das tabelas do mysql;
 * esp8266 - firmware para o nodemcu;
 * server - referente ao back-end da aplicação. Neste caso terá 2 back-ends(poderá escolher 1 para seu uso);
     * nodejs
