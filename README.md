@@ -1,4 +1,4 @@
-# Controle de acesso utilizando NodeMCU, RFID, MQTT e Banco de Dados PostgreSQL
+# API-REST Controle de acesso utilizando NodeMCU, RFID, MQTT e Banco de Dados PostgreSQL
 
 
 ## Introdução
