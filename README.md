@@ -24,7 +24,7 @@ Este projeto possui como objetivo autenticar/autorizar usuários a partir de Tag
     * [promise](https://github.com/then/promise);
     * [request-promise](https://github.com/request/request-promise);
     * [express](https://github.com/expressjs/express);
-    * [mysqljs](https://github.com/mysqljs/mysql);
+    * [postgres](https://github.com/postgres);
     * [dotenv](https://github.com/motdotla/dotenv);
 
 Basicamente as etapas abaixo serão feitas:
